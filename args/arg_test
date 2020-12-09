@@ -1,0 +1,15 @@
+FROM ubuntu:18.04
+RUN apt-get update
+RUN apt-get install openjdk-11-jdk wget tar -y
+ARG version
+ADD http://mirror.23media.de/apache/tomcat/tomcat-8/v$version/bin/apache-tomcat-$version.tar.gz  /opt/tomcat/
+WORKDIR /opt/tomcat
+RUN tar -xzf apache-tomcat-$version.tar.gz
+WORKDIR /opt/tomcat/apache-tomcat-$version/bin/
+RUN chmod 777 startup.sh shutdown.sh catalina.sh
+ADD https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war /opt/tomcat/apache-tomcat-$version/webapps/
+EXPOSE 8080
+WORKDIR /opt/tomcat/apache-tomcat-$version/
+CMD bin/catalina.sh run
+
+#docker build -t arg_test -f arg_test --build-arg version=8.5.30 .
